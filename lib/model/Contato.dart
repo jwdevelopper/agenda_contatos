@@ -11,6 +11,8 @@ class Contato {
   String telefone;
   String img;
 
+  Contato(){}
+
   Contato.fromMap(Map map) {
     id = map[idColumn];
     nome = map[nomeColumn];

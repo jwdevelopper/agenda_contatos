@@ -2,7 +2,7 @@
 
 import 'dart:async';
 
-import 'package:agenda_contatos/model/Contato.dart';
+import 'package:agenda_contatos/model/contato.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
