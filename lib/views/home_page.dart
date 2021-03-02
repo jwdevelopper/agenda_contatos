@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:agenda_contatos/helpers/contato_helper.dart';
 import 'package:agenda_contatos/model/contato.dart';
 import 'package:flutter/material.dart';
@@ -8,21 +10,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   ContatoHelper contatoHelper = ContatoHelper();
   List<Contato> contatos = List();
 
   @override
-  
-    void initState() {
-      super.initState();
-      contatoHelper.getContatos().then((list) {
-        setState(() {
-          contatos = list;          
-                });
-        
+  void initState() {
+    super.initState();
+    contatoHelper.getContatos().then((list) {
+      setState(() {
+        contatos = list;
       });
-      /*Contato contato = Contato();
+    });
+    /*Contato contato = Contato();
       contato.nome = 'José Wilson Junior';
       contato.telefone = '44 9 98129931';
       contato.email = 'jwjuniorsi@gmail.com';
@@ -32,7 +31,7 @@ class _HomePageState extends State<HomePage> {
       contatoHelper.getContatos().then((list) {
 print(list);
       });*/
-    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +43,14 @@ print(list);
       ),
       backgroundColor: Color(0xFF333033),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.add),
-        backgroundColor: Color(0XFF7a018c)
-      ),
+          onPressed: () {},
+          child: Icon(Icons.add),
+          backgroundColor: Color(0XFF7a018c)),
       body: ListView.builder(
-          padding: EdgeInsets.all(10.0),
-          itemCount: contatos.length,
-          itemBuilder: (context, index) {
-
-          },
-        ),
+        padding: EdgeInsets.all(10.0),
+        itemCount: contatos.length,
+        itemBuilder: (context, index) {},
+      ),
     );
   }
 
@@ -69,12 +65,28 @@ print(list);
                 width: 80.0,
                 height: 80.0,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: 
-                  )
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: contatos[index].img != null
+                            ? FileImage(File(contatos[index].img))
+                            : AssetImage("assets/img/user.png"))),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 10.0),
+                child: Column(
+                  children: [
+                    Text(contatos[index].nome ?? "",
+                        style: TextStyle(
+                            color: Colors.white24,
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold)),
+                    Text(contatos[index].email ?? "",
+                        style: TextStyle(
+                            color: Colors.white24,
+                            fontSize: 18.0)),
+                  ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -82,6 +94,3 @@ print(list);
     );
   }
 }
-
-
-
