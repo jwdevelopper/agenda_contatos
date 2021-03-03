@@ -1,9 +1,11 @@
+import 'package:agenda_contatos/views/contato_page.dart';
 import 'package:agenda_contatos/views/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: HomePage(),
+    debugShowCheckedModeBanner: false,
+    home: PaginaContato(),
   ));
 }
 

@@ -49,7 +49,9 @@ print(list);
       body: ListView.builder(
         padding: EdgeInsets.all(10.0),
         itemCount: contatos.length,
-        itemBuilder: (context, index) {},
+        itemBuilder: (context, index) {
+          return _cardContato(context, index);
+        },
       ),
     );
   }
@@ -57,6 +59,7 @@ print(list);
   Widget _cardContato(BuildContext context, int index) {
     return GestureDetector(
       child: Card(
+        color: Colors.transparent,
         child: Padding(
           padding: EdgeInsets.all(10.0),
           child: Row(
@@ -67,22 +70,27 @@ print(list);
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: contatos[index].img != null
+                        image: contatos[index].img == null
                             ? FileImage(File(contatos[index].img))
-                            : AssetImage("assets/img/user.png"))),
+                            : AssetImage("assets/user.png"))),
               ),
               Padding(
                 padding: EdgeInsets.only(left: 10.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(contatos[index].nome ?? "",
                         style: TextStyle(
-                            color: Colors.white24,
+                            color: Colors.white,
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold)),
                     Text(contatos[index].email ?? "",
                         style: TextStyle(
-                            color: Colors.white24,
+                            color: Colors.white,
+                            fontSize: 18.0)),
+                    Text(contatos[index].telefone ?? "",
+                        style: TextStyle(
+                            color: Colors.white,
                             fontSize: 18.0)),
                   ],
                 ),
