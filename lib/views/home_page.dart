@@ -6,6 +6,8 @@ import 'package:agenda_contatos/views/contato_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+enum OrderOptions { orderaz, orderza }
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -38,6 +40,21 @@ print(list);
         title: Text("Contatos"),
         backgroundColor: Color(0XFF7a018c),
         centerTitle: true,
+        actions: <Widget>[
+          PopupMenuButton<OrderOptions>(
+            itemBuilder: (context) => <PopupMenuEntry<OrderOptions>>[
+              const PopupMenuItem<OrderOptions>(
+                child: Text("Ordenar de A-Z"),
+                value: OrderOptions.orderaz,
+              ),
+              const PopupMenuItem<OrderOptions>(
+                child: Text("Ordenar de Z-A"),
+                value: OrderOptions.orderza,
+              ),
+            ],
+            onSelected: _orderList,
+          )
+        ],
       ),
       backgroundColor: Color(0xFF333033),
       floatingActionButton: FloatingActionButton(
@@ -70,6 +87,7 @@ print(list);
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
+                        fit: BoxFit.cover,
                         image: contatos[index].img != null
                             ? FileImage(File(contatos[index].img))
                             : AssetImage("assets/user.png"))),
@@ -116,7 +134,7 @@ print(list);
     }
   }
 
-  void _getAllContatos() async{
+  void _getAllContatos() async {
     await contatoHelper.getContatos().then((list) {
       setState(() {
         contatos = list;
@@ -191,5 +209,21 @@ print(list);
             },
           );
         });
+  }
+
+  void _orderList(OrderOptions result) {
+    switch (result) {
+      case OrderOptions.orderaz:
+        contatos.sort((a, b) {
+          return a.nome.toLowerCase().compareTo(b.nome.toLowerCase());
+        });
+        break;
+      case OrderOptions.orderza:
+        contatos.sort((a, b) {
+          return b.nome.toLowerCase().compareTo(a.nome.toLowerCase());
+        });
+        break;
+    }
+    setState(() {});
   }
 }

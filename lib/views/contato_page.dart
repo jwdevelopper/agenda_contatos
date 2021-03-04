@@ -73,18 +73,20 @@ class _PaginaContatoState extends State<PaginaContato> {
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
+                          fit: BoxFit.cover,
                           image: _contatoEditado.img != null
                               ? FileImage(File(_contatoEditado.img))
                               : AssetImage("assets/user.png"))),
                 ),
                 onTap: () {
-                  ImagePicker.pickImage(source: ImageSource.camera).then((file){
-                    if(file==null){
+                  ImagePicker.pickImage(source: ImageSource.camera)
+                      .then((file) {
+                    if (file == null) {
                       return;
-                    } 
+                    }
                     setState(() {
                       _contatoEditado.img = file.path;
-                    }); 
+                    });
                   });
                 },
               ),
@@ -93,7 +95,11 @@ class _PaginaContatoState extends State<PaginaContato> {
                 focusNode: _nomeFocus,
                 decoration: InputDecoration(
                     labelText: "Nome",
-                    labelStyle: TextStyle(color: Colors.white)),
+                    labelStyle: TextStyle(color: Colors.white),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)),
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white))),
                 onChanged: (texto) {
                   _editandoContato = true;
                   setState(() {
@@ -103,10 +109,14 @@ class _PaginaContatoState extends State<PaginaContato> {
               ),
               TextField(
                 controller: _emailController,
+                style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  labelText: "Email",
-                  labelStyle: TextStyle(color: Colors.white),
-                ),
+                    labelText: "Email",
+                    labelStyle: TextStyle(color: Colors.white),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)),
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white))),
                 onChanged: (texto) {
                   _editandoContato = true;
                   _contatoEditado.email = texto;
@@ -117,7 +127,11 @@ class _PaginaContatoState extends State<PaginaContato> {
                   controller: _telefoneController,
                   decoration: InputDecoration(
                       labelText: "Telefone",
-                      labelStyle: TextStyle(color: Colors.white)),
+                      labelStyle: TextStyle(color: Colors.white),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white))),
                   onChanged: (texto) {
                     _editandoContato = true;
                     _contatoEditado.telefone = texto;
@@ -130,31 +144,31 @@ class _PaginaContatoState extends State<PaginaContato> {
     );
   }
 
-  Future<bool> _requestPop(){
-    if(_editandoContato){
-      showDialog(context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Descartar Alterações"),
-            content: Text("Caso saia as alterações serão perdidas"),
-            actions: [
-              FlatButton(
-                onPressed: (){
-                  Navigator.pop(context);
-                },
-                child: Text("Cancelar"),
-              ),
-              FlatButton(
-                onPressed: (){
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: Text("Sim"),
-              ),
-            ],
-          );
-        }
-      );
+  Future<bool> _requestPop() {
+    if (_editandoContato) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Descartar Alterações"),
+              content: Text("Caso saia as alterações serão perdidas"),
+              actions: [
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Cancelar"),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  child: Text("Sim"),
+                ),
+              ],
+            );
+          });
       return Future.value(false);
     } else {
       return Future.value(true);
