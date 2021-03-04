@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:agenda_contatos/helpers/contato_helper.dart';
 import 'package:agenda_contatos/model/contato.dart';
+import 'package:agenda_contatos/views/contato_page.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,11 +18,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    contatoHelper.getContatos().then((list) {
-      setState(() {
-        contatos = list;
-      });
-    });
+    _getAllContatos();
     /*Contato contato = Contato();
       contato.nome = 'José Wilson Junior';
       contato.telefone = '44 9 98129931';
@@ -43,7 +41,9 @@ print(list);
       ),
       backgroundColor: Color(0xFF333033),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            _showPaginaContato();
+          },
           child: Icon(Icons.add),
           backgroundColor: Color(0XFF7a018c)),
       body: ListView.builder(
@@ -70,7 +70,7 @@ print(list);
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: contatos[index].img == null
+                        image: contatos[index].img != null
                             ? FileImage(File(contatos[index].img))
                             : AssetImage("assets/user.png"))),
               ),
@@ -85,13 +85,9 @@ print(list);
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold)),
                     Text(contatos[index].email ?? "",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0)),
+                        style: TextStyle(color: Colors.white, fontSize: 18.0)),
                     Text(contatos[index].telefone ?? "",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0)),
+                        style: TextStyle(color: Colors.white, fontSize: 18.0)),
                   ],
                 ),
               ),
@@ -99,6 +95,101 @@ print(list);
           ),
         ),
       ),
+      onTap: () {
+        _showOpcoes(context, index);
+      },
     );
+  }
+
+  void _showPaginaContato({Contato contato}) async {
+    final recContato = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PaginaContato(contato: contato)));
+    if (recContato != null) {
+      if (contato != null) {
+        await contatoHelper.updateContato(recContato);
+      } else {
+        await contatoHelper.salvarContato(recContato);
+      }
+      _getAllContatos();
+    }
+  }
+
+  void _getAllContatos() async{
+    await contatoHelper.getContatos().then((list) {
+      setState(() {
+        contatos = list;
+      });
+    });
+  }
+
+  void _showOpcoes(BuildContext context, int index) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return BottomSheet(
+            backgroundColor: Color(0xFF52514e),
+            onClosing: () {},
+            builder: (context) {
+              return Container(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: FlatButton(
+                          child: Text(
+                            "Ligar",
+                            style: TextStyle(
+                                color: Colors.amber,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.0),
+                          ),
+                          onPressed: () {
+                            launch("tel:${contatos[index].telefone}");
+                            Navigator.pop(context);
+                          },
+                        )),
+                    Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: FlatButton(
+                          child: Text(
+                            "Editar",
+                            style: TextStyle(
+                                color: Colors.amber,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.0),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            _showPaginaContato(contato: contatos[index]);
+                          },
+                        )),
+                    Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: FlatButton(
+                          child: Text(
+                            "Excluir",
+                            style: TextStyle(
+                                color: Colors.amber,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.0),
+                          ),
+                          onPressed: () {
+                            contatoHelper.deletarContato(contatos[index].id);
+                            setState(() {
+                              contatos.removeAt(index);
+                              Navigator.pop(context);
+                            });
+                          },
+                        )),
+                  ],
+                ),
+              );
+            },
+          );
+        });
   }
 }
